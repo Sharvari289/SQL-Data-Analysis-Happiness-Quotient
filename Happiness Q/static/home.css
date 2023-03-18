@@ -1,0 +1,41 @@
+body{
+    background-color: darkgrey;
+    justify-content: center;
+    height:100vh;
+    overflow: hidden;
+}
+.page{
+    height:100%;
+}
+.gui{
+    background-color: white;
+    width:80%;
+    margin:3rem auto;
+    height:80%;
+    padding:2rem;
+    padding-top: 4rem;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    border-radius: 2rem;
+}
+h1{
+    font-size: 60px;
+}
+
+.edfs{
+    padding: 1rem;
+    margin: 3rem auto;
+}
+.edfs-h{
+    margin-bottom:2rem 
+}
+
+
+.analysis{
+    padding: 1rem;
+    margin: 3rem auto;
+}
+.analysis-h{
+    margin-bottom:2rem 
+}

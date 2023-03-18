@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='analytics.css') }}" />
+    <title>Document</title>
+</head>
+<body>
+  <div class="input_div">
+    <form name="form1" id="form1" action="/analytics" method="POST">
+        <label>Datasets</label>
+        <select name="dataset" id="dataset" class="form-control mt-2" onchange="changeanalysis(this)">
+          <option value="" selected="selected">Select Datasets</option>
+          <option value="whr" >World Happiness Dataset</option>
+          <option value="GDP" >GDP</option>
+          <option value="unemp" >Unemployment</option>
+        </select>
+    
+        <label class="mt-2">Analysis</label>
+        <select name="analyze" id="analyze" class="form-control mt-2" onchange="showfurther(this)">
+        <option value="" selected="selected">Please select the analysis</option>
+      </select>
+
+      <div class="extra">
+
+      </div>
+      <input type="submit" class="btn btn-outline-dark btn-md mt-4" value="Submit">
+    </form>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 second_div">
+      {% if csv %}
+        {% for table in ans %}                           
+        {{ table|safe }}
+        {% endfor %} 
+      {% else %}
+        {% for i in ans: %}
+          {{i}}
+          <br>    
+        {% endfor %}
+      {% endif %}
+    </div>
+    <div class="col-md-5 third_div">
+      {% if exp != "" %}
+      <h4 class="mb-2">Output for Map function:</h4>
+        {{exp['map']}}
+      {% if 'combiner' in exp%}
+        <h4 class="mt-2 mb-2">Output for Combiner function:</h4>
+        {{exp['combiner']}}
+      {% endif %}
+
+      <h4 class="mt-2 mb-2">Output for Reduce function:</h4>
+        {{exp['reducer']}}
+      {% endif %}
+    </div>
+  </div>
+
+</body>
+<script>
+   $('.dataframe').addClass('table table-bordered');
+    op={
+        "whr":{'Top 10 for a specific year':{
+            "year":["2015","2016","2017","2018","2019"],
+            "columns":['Happiness_Rank', 'Happiness_Score',
+      'Economy_(GDP_per_Capita)', 'Health_Life_Expectancy', 'Freedom',
+       'Trust_(Government_Corruption)', 'Generosity']
+        },'Lowest 10 for a specific year':{
+            "year":["2015","2016","2017","2018","2019"],
+            "columns":['Happiness_Rank', 'Happiness_Score',
+      'Economy_(GDP_per_Capita)', 'Health_Life_Expectancy', 'Freedom',
+       'Trust_(Government_Corruption)', 'Generosity']
+        },'Lowest factor score for a country':{ "country":['Switzerland', 'Iceland', 'Denmark', 'Norway', 'Canada', 'Finland',
+       'Netherlands', 'Sweden', 'New_Zealand', 'Australia', 'Israel',
+       'Costa_Rica', 'Austria', 'Mexico', 'United_States', 'Brazil',
+       'Luxembourg', 'Ireland', 'Belgium', 'United_Arab_Emirates',
+       'United_Kingdom', 'Oman', 'Venezuela', 'Singapore', 'Panama',
+       'Germany', 'Chile', 'Qatar', 'France', 'Argentina',
+       'Czech_Republic', 'Uruguay', 'Colombia', 'Thailand',
+       'Saudi_Arabia', 'Spain', 'Malta', 'Taiwan', 'Kuwait', 'Suriname',
+       'Trinidad_and_Tobago', 'El_Salvador', 'Guatemala', 'Uzbekistan',
+       'Slovakia', 'Japan', 'South_Korea', 'Ecuador', 'Bahrain', 'Italy',
+       'Bolivia', 'Moldova', 'Paraguay', 'Kazakhstan', 'Slovenia',
+       'Lithuania', 'Nicaragua', 'Peru', 'Belarus', 'Poland', 'Malaysia',
+       'Croatia', 'Libya', 'Russia', 'Jamaica', 'North_Cyprus', 'Cyprus',
+       'Algeria', 'Kosovo', 'Turkmenistan', 'Mauritius', 'Hong_Kong',
+       'Estonia', 'Indonesia', 'Vietnam', 'Turkey', 'Kyrgyzstan',
+       'Nigeria', 'Bhutan', 'Azerbaijan', 'Pakistan', 'Jordan',
+       'Montenegro', 'China', 'Zambia', 'Romania', 'Serbia', 'Portugal',
+       'Latvia', 'Philippines', 'Somaliland_region', 'Morocco',
+       'Macedonia', 'Mozambique', 'Albania', 'Bosnia_and_Herzegovina',
+       'Lesotho', 'Dominican_Republic', 'Laos', 'Mongolia', 'Swaziland',
+       'Greece', 'Lebanon', 'Hungary', 'Honduras', 'Tajikistan',
+       'Tunisia', 'Palestinian_Territories', 'Bangladesh', 'Iran',
+       'Ukraine', 'Iraq', 'South_Africa', 'Ghana', 'Zimbabwe', 'Liberia',
+       'India', 'Sudan', 'Haiti', 'Congo_(Kinshasa)', 'Nepal', 'Ethiopia',
+       'Sierra_Leone', 'Mauritania', 'Kenya', 'Djibouti', 'Armenia',
+       'Botswana', 'Myanmar', 'Georgia', 'Malawi', 'Sri_Lanka',
+       'Cameroon', 'Bulgaria', 'Egypt', 'Yemen', 'Angola', 'Mali',
+       'Congo_(Brazzaville)', 'Comoros', 'Uganda', 'Senegal', 'Gabon',
+       'Niger', 'Cambodia', 'Tanzania', 'Madagascar',
+       'Central_African_Republic', 'Chad', 'Guinea', 'Ivory_Coast',
+       'Burkina_Faso', 'Afghanistan', 'Rwanda', 'Benin', 'Syria',
+       'Burundi', 'Togo', 'Puerto_Rico', 'Belize', 'Somalia',
+       'Somaliland_Region', 'Namibia', 'South_Sudan',
+       'Taiwan_Province_of_China', 'Hong_Kong_S.A.R.,_China',
+       'Trinidad_&_Tobago', 'Northern_Cyprus', 'North_Macedonia',
+       'Gambia'],
+            "columns":['Happiness_Rank', 'Happiness_Score',
+      'Economy_(GDP_per_Capita)', 'Health_Life_Expectancy', 'Freedom',
+       'Trust_(Government_Corruption)', 'Generosity', 'Year']},
+       'Highest factor score for a country':{          "country":['Switzerland', 'Iceland', 'Denmark', 'Norway', 'Canada', 'Finland',
+       'Netherlands', 'Sweden', 'New_Zealand', 'Australia', 'Israel',
+       'Costa_Rica', 'Austria', 'Mexico', 'United_States', 'Brazil',
+       'Luxembourg', 'Ireland', 'Belgium', 'United_Arab_Emirates',
+       'United_Kingdom', 'Oman', 'Venezuela', 'Singapore', 'Panama',
+       'Germany', 'Chile', 'Qatar', 'France', 'Argentina',
+       'Czech_Republic', 'Uruguay', 'Colombia', 'Thailand',
+       'Saudi_Arabia', 'Spain', 'Malta', 'Taiwan', 'Kuwait', 'Suriname',
+       'Trinidad_and_Tobago', 'El_Salvador', 'Guatemala', 'Uzbekistan',
+       'Slovakia', 'Japan', 'South_Korea', 'Ecuador', 'Bahrain', 'Italy',
+       'Bolivia', 'Moldova', 'Paraguay', 'Kazakhstan', 'Slovenia',
+       'Lithuania', 'Nicaragua', 'Peru', 'Belarus', 'Poland', 'Malaysia',
+       'Croatia', 'Libya', 'Russia', 'Jamaica', 'North_Cyprus', 'Cyprus',
+       'Algeria', 'Kosovo', 'Turkmenistan', 'Mauritius', 'Hong_Kong',
+       'Estonia', 'Indonesia', 'Vietnam', 'Turkey', 'Kyrgyzstan',
+       'Nigeria', 'Bhutan', 'Azerbaijan', 'Pakistan', 'Jordan',
+       'Montenegro', 'China', 'Zambia', 'Romania', 'Serbia', 'Portugal',
+       'Latvia', 'Philippines', 'Somaliland_region', 'Morocco',
+       'Macedonia', 'Mozambique', 'Albania', 'Bosnia_and_Herzegovina',
+       'Lesotho', 'Dominican_Republic', 'Laos', 'Mongolia', 'Swaziland',
+       'Greece', 'Lebanon', 'Hungary', 'Honduras', 'Tajikistan',
+       'Tunisia', 'Palestinian_Territories', 'Bangladesh', 'Iran',
+       'Ukraine', 'Iraq', 'South_Africa', 'Ghana', 'Zimbabwe', 'Liberia',
+       'India', 'Sudan', 'Haiti', 'Congo_(Kinshasa)', 'Nepal', 'Ethiopia',
+       'Sierra_Leone', 'Mauritania', 'Kenya', 'Djibouti', 'Armenia',
+       'Botswana', 'Myanmar', 'Georgia', 'Malawi', 'Sri_Lanka',
+       'Cameroon', 'Bulgaria', 'Egypt', 'Yemen', 'Angola', 'Mali',
+       'Congo_(Brazzaville)', 'Comoros', 'Uganda', 'Senegal', 'Gabon',
+       'Niger', 'Cambodia', 'Tanzania', 'Madagascar',
+       'Central_African_Republic', 'Chad', 'Guinea', 'Ivory_Coast',
+       'Burkina_Faso', 'Afghanistan', 'Rwanda', 'Benin', 'Syria',
+       'Burundi', 'Togo', 'Puerto_Rico', 'Belize', 'Somalia',
+       'Somaliland_Region', 'Namibia', 'South_Sudan',
+       'Taiwan_Province_of_China', 'Hong_Kong_S.A.R.,_China',
+       'Trinidad_&_Tobago', 'Northern_Cyprus', 'North_Macedonia',
+       'Gambia'],
+            "columns":['Happiness_Rank', 'Happiness_Score',
+      'Economy_(GDP_per_Capita)', 'Health_Life_Expectancy', 'Freedom',
+       'Trust_(Government_Corruption)', 'Generosity']},
+       'Mean factor score for a country':{"country":['Switzerland', 'Iceland', 'Denmark', 'Norway', 'Canada', 'Finland',
+       'Netherlands', 'Sweden', 'New_Zealand', 'Australia', 'Israel',
+       'Costa_Rica', 'Austria', 'Mexico', 'United_States', 'Brazil',
+       'Luxembourg', 'Ireland', 'Belgium', 'United_Arab_Emirates',
+       'United_Kingdom', 'Oman', 'Venezuela', 'Singapore', 'Panama',
+       'Germany', 'Chile', 'Qatar', 'France', 'Argentina',
+       'Czech_Republic', 'Uruguay', 'Colombia', 'Thailand',
+       'Saudi_Arabia', 'Spain', 'Malta', 'Taiwan', 'Kuwait', 'Suriname',
+       'Trinidad_and_Tobago', 'El_Salvador', 'Guatemala', 'Uzbekistan',
+       'Slovakia', 'Japan', 'South_Korea', 'Ecuador', 'Bahrain', 'Italy',
+       'Bolivia', 'Moldova', 'Paraguay', 'Kazakhstan', 'Slovenia',
+       'Lithuania', 'Nicaragua', 'Peru', 'Belarus', 'Poland', 'Malaysia',
+       'Croatia', 'Libya', 'Russia', 'Jamaica', 'North_Cyprus', 'Cyprus',
+       'Algeria', 'Kosovo', 'Turkmenistan', 'Mauritius', 'Hong_Kong',
+       'Estonia', 'Indonesia', 'Vietnam', 'Turkey', 'Kyrgyzstan',
+       'Nigeria', 'Bhutan', 'Azerbaijan', 'Pakistan', 'Jordan',
+       'Montenegro', 'China', 'Zambia', 'Romania', 'Serbia', 'Portugal',
+       'Latvia', 'Philippines', 'Somaliland_region', 'Morocco',
+       'Macedonia', 'Mozambique', 'Albania', 'Bosnia_and_Herzegovina',
+       'Lesotho', 'Dominican_Republic', 'Laos', 'Mongolia', 'Swaziland',
+       'Greece', 'Lebanon', 'Hungary', 'Honduras', 'Tajikistan',
+       'Tunisia', 'Palestinian_Territories', 'Bangladesh', 'Iran',
+       'Ukraine', 'Iraq', 'South_Africa', 'Ghana', 'Zimbabwe', 'Liberia',
+       'India', 'Sudan', 'Haiti', 'Congo_(Kinshasa)', 'Nepal', 'Ethiopia',
+       'Sierra_Leone', 'Mauritania', 'Kenya', 'Djibouti', 'Armenia',
+       'Botswana', 'Myanmar', 'Georgia', 'Malawi', 'Sri_Lanka',
+       'Cameroon', 'Bulgaria', 'Egypt', 'Yemen', 'Angola', 'Mali',
+       'Congo_(Brazzaville)', 'Comoros', 'Uganda', 'Senegal', 'Gabon',
+       'Niger', 'Cambodia', 'Tanzania', 'Madagascar',
+       'Central_African_Republic', 'Chad', 'Guinea', 'Ivory_Coast',
+       'Burkina_Faso', 'Afghanistan', 'Rwanda', 'Benin', 'Syria',
+       'Burundi', 'Togo', 'Puerto_Rico', 'Belize', 'Somalia',
+       'Somaliland_Region', 'Namibia', 'South_Sudan',
+       'Taiwan_Province_of_China', 'Hong_Kong_S.A.R.,_China',
+       'Trinidad_&_Tobago', 'Northern_Cyprus', 'North_Macedonia',
+       'Gambia'],
+            "columns":['Happiness_Rank', 'Happiness_Score',
+      'Economy_(GDP_per_Capita)', 'Health_Life_Expectancy', 'Freedom',
+       'Trust_(Government_Corruption)', 'Generosity']},
+       'Median factor score for a country':{"country":['Switzerland', 'Iceland', 'Denmark', 'Norway', 'Canada', 'Finland',
+       'Netherlands', 'Sweden', 'New_Zealand', 'Australia', 'Israel',
+       'Costa_Rica', 'Austria', 'Mexico', 'United_States', 'Brazil',
+       'Luxembourg', 'Ireland', 'Belgium', 'United_Arab_Emirates',
+       'United_Kingdom', 'Oman', 'Venezuela', 'Singapore', 'Panama',
+       'Germany', 'Chile', 'Qatar', 'France', 'Argentina',
+       'Czech_Republic', 'Uruguay', 'Colombia', 'Thailand',
+       'Saudi_Arabia', 'Spain', 'Malta', 'Taiwan', 'Kuwait', 'Suriname',
+       'Trinidad_and_Tobago', 'El_Salvador', 'Guatemala', 'Uzbekistan',
+       'Slovakia', 'Japan', 'South_Korea', 'Ecuador', 'Bahrain', 'Italy',
+       'Bolivia', 'Moldova', 'Paraguay', 'Kazakhstan', 'Slovenia',
+       'Lithuania', 'Nicaragua', 'Peru', 'Belarus', 'Poland', 'Malaysia',
+       'Croatia', 'Libya', 'Russia', 'Jamaica', 'North_Cyprus', 'Cyprus',
+       'Algeria', 'Kosovo', 'Turkmenistan', 'Mauritius', 'Hong_Kong',
+       'Estonia', 'Indonesia', 'Vietnam', 'Turkey', 'Kyrgyzstan',
+       'Nigeria', 'Bhutan', 'Azerbaijan', 'Pakistan', 'Jordan',
+       'Montenegro', 'China', 'Zambia', 'Romania', 'Serbia', 'Portugal',
+       'Latvia', 'Philippines', 'Somaliland_region', 'Morocco',
+       'Macedonia', 'Mozambique', 'Albania', 'Bosnia_and_Herzegovina',
+       'Lesotho', 'Dominican_Republic', 'Laos', 'Mongolia', 'Swaziland',
+       'Greece', 'Lebanon', 'Hungary', 'Honduras', 'Tajikistan',
+       'Tunisia', 'Palestinian_Territories', 'Bangladesh', 'Iran',
+       'Ukraine', 'Iraq', 'South_Africa', 'Ghana', 'Zimbabwe', 'Liberia',
+       'India', 'Sudan', 'Haiti', 'Congo_(Kinshasa)', 'Nepal', 'Ethiopia',
+       'Sierra_Leone', 'Mauritania', 'Kenya', 'Djibouti', 'Armenia',
+       'Botswana', 'Myanmar', 'Georgia', 'Malawi', 'Sri_Lanka',
+       'Cameroon', 'Bulgaria', 'Egypt', 'Yemen', 'Angola', 'Mali',
+       'Congo_(Brazzaville)', 'Comoros', 'Uganda', 'Senegal', 'Gabon',
+       'Niger', 'Cambodia', 'Tanzania', 'Madagascar',
+       'Central_African_Republic', 'Chad', 'Guinea', 'Ivory_Coast',
+       'Burkina_Faso', 'Afghanistan', 'Rwanda', 'Benin', 'Syria',
+       'Burundi', 'Togo', 'Puerto_Rico', 'Belize', 'Somalia',
+       'Somaliland_Region', 'Namibia', 'South_Sudan',
+       'Taiwan_Province_of_China', 'Hong_Kong_S.A.R.,_China',
+       'Trinidad_&_Tobago', 'Northern_Cyprus', 'North_Macedonia',
+       'Gambia'],
+            "columns":['Happiness_Rank', 'Happiness_Score',
+      'Economy_(GDP_per_Capita)', 'Health_Life_Expectancy', 'Freedom',
+       'Trust_(Government_Corruption)', 'Generosity']}},
+
+       'GDP':{
+        'Maximum GDP':{"year":["2015","2016","2017","2018","2019"],"type":["GDP_USD","GDP_per_capita_USD"]},
+        'Minimum GDP':{"year":["2015","2016","2017","2018","2019"],"type":["GDP_USD","GDP_per_capita_USD"]},
+        'Top 10 GDP countries for a specific year':{"year":["2015","2016","2017","2018","2019"],"type":["GDP_USD","GDP_per_capita_USD"]},
+        'Lowest 10 GDP countries for a specific year':{"year":["2015","2016","2017","2018","2019"],"type":["GDP_USD","GDP_per_capita_USD"]}
+
+       },
+       "unemp":{
+        'Maximum unemployment per month for a specific location and gender':{
+            'gender':['TOT', 'MEN', 'WOMEN'],
+            'Location':['AUS', 'AUT', 'BEL', 'CAN', 'CZE', 'DNK', 'FIN', 'FRA', 'DEU',
+       'GRC', 'HUN', 'ISL', 'IRL', 'ITA', 'JPN', 'KOR', 'LUX', 'MEX',
+       'NLD', 'NOR', 'POL', 'PRT', 'SVK', 'ESP', 'SWE', 'TUR', 'GBR',
+       'USA', 'CHL', 'EST', 'ISR', 'SVN', 'EU28', 'OECD', 'G-7', 'EA19',
+       'LVA', 'LTU', 'COL', 'EU27_2020']
+        },
+        'Minimum unemployment per month for a specific location and gender':{
+            'gender':['TOT', 'MEN', 'WOMEN'],
+            'Location':['AUS', 'AUT', 'BEL', 'CAN', 'CZE', 'DNK', 'FIN', 'FRA', 'DEU',
+       'GRC', 'HUN', 'ISL', 'IRL', 'ITA', 'JPN', 'KOR', 'LUX', 'MEX',
+       'NLD', 'NOR', 'POL', 'PRT', 'SVK', 'ESP', 'SWE', 'TUR', 'GBR',
+       'USA', 'CHL', 'EST', 'ISR', 'SVN', 'EU28', 'OECD', 'G-7', 'EA19',
+       'LVA', 'LTU', 'COL', 'EU27_2020']
+        },
+        'Average unemployment per month for a specific location and gender':{
+            'gender':['TOT', 'MEN', 'WOMEN'],
+            'Location':['AUS', 'AUT', 'BEL', 'CAN', 'CZE', 'DNK', 'FIN', 'FRA', 'DEU',
+       'GRC', 'HUN', 'ISL', 'IRL', 'ITA', 'JPN', 'KOR', 'LUX', 'MEX',
+       'NLD', 'NOR', 'POL', 'PRT', 'SVK', 'ESP', 'SWE', 'TUR', 'GBR',
+       'USA', 'CHL', 'EST', 'ISR', 'SVN', 'EU28', 'OECD', 'G-7', 'EA19',
+       'LVA', 'LTU', 'COL', 'EU27_2020']
+        }
+       }
+    }
+
+function changeanalysis(ans){
+
+    var z = Object.keys(op[ans.value]);
+    var analysis = document.getElementById("analyze");
+    analysis.length=1
+    for (var i = 0; i < z.length; i++) {
+ 
+        analysis.options[analysis.options.length] = new Option(z[i], z[i]);
+    }
+}
+
+function showfurther(ans){
+    var dataset = document.getElementById("dataset").value;
+    var analyze=ans.value
+
+    var keys=Object.keys(op[dataset][analyze])
+    var sub_ob=op[dataset][analyze]
+    $('.extra').empty();
+    for (var j=0;j<keys.length;j++)
+    {
+       var l = document.createElement("label"); 
+       l.innerText=keys[j].charAt(0).toUpperCase() + keys[j].slice(1)
+        l.setAttribute("class","mt-2")
+        var y = document.createElement("select"); 
+        y.setAttribute('id',keys[j])
+        y.setAttribute('name',keys[j])
+        y.setAttribute('class',"form-control mt-2")
+        y.length=1
+        var temp=sub_ob[keys[j]]
+        for (var i = 0; i <temp.length; i++) {
+        y.options[y.options.length] = new Option(temp[i], temp[i]);
+    }
+    var label=document.createElement("label")
+     $('.extra').append(l)
+     $('.extra').append(y)
+
+    }
+
+
+    
+}
+</script>
+</html>

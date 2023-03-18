@@ -1,0 +1,43 @@
+body{
+    background-color: darkgrey;
+    justify-content: center;
+    height:100vh;
+    overflow-x: hidden;
+}
+
+.first_div{
+    background-color: white;
+    margin:2rem;
+    padding:2rem;
+    border-radius: 2rem ;
+    overflow-y: scroll;
+    height:60vh;
+}
+
+.second_div{
+    background-color: white;
+    margin:2rem;
+    margin-left:1rem;
+    padding:2rem;
+    border-radius: 2rem ;
+    overflow-y: auto;
+    font-size: 14px;
+    height:60vh;
+}
+
+.third_div{
+    background-color: white;
+    margin:2rem;
+    margin-top: 0rem;
+    margin-left:1rem;
+    padding:2rem;
+    border-radius: 2rem ;
+    overflow-y:scroll;
+    font-size: 14px;
+}
+.dataframe th,td{
+    border-width: 1px;
+    border-color: black;
+    text-align: left;
+
+}

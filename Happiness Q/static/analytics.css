@@ -1,0 +1,40 @@
+body{
+    background-color: darkgrey;
+    justify-content: center;
+    height:100vh;
+    overflow-x: hidden;
+}
+
+.input_div{
+    background-color: white;
+    margin:3rem;
+    padding:2rem;
+    border-radius:2rem ;
+}
+
+.dataframe tr,td,th{
+    border-width: 1px;
+    border-color: black;
+    text-align: left;
+}
+
+.second_div{
+    background-color: white;
+    margin:3rem;
+    margin-top:0rem;
+    margin-right:0.5rem;
+    padding:2rem;
+    border-radius: 2rem ;
+    overflow-y:scroll;
+    font-size: 14px;
+}
+.third_div{
+    background-color: white;
+    margin:3rem;
+    margin-top:0rem;
+    margin-left:0.5rem;
+    padding:2rem;
+    border-radius: 2rem ;
+    overflow-y:scroll;
+    font-size: 14px;
+}
