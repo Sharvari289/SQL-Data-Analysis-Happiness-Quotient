@@ -3,6 +3,9 @@ This project implements an Emulated Distributed File Storage (EDFS) system using
 
 App Link - https://happinessq.onrender.com/
 
+## Note
+The file app.py, which house the primary application logic, are securely stored within a private repository in accordance with the project requirements. 
+
 ## Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
